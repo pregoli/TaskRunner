@@ -36,6 +36,16 @@ gulp.task('cleancss', ['sass'], function () {
 });
 // SASS TASK END
 
+// TYPESCRIPT TASK
+gulp.task('typescript', function () {
+  return gulp.src('app/**/*.ts')
+    .pipe(ts())
+    .pipe(gulp.dest('dist'))
+    // .pipe(gulp.dest(function (file) { return file.base; }))
+    .pipe(notify({ message: "Typescript transpiling successfully", onLast: true }))
+});
+// TYPESCRIPT TASK END
+
 // USEREF TASK (It will conctaenate all js wrapped in comment containings info about the path a nd final dest)
 gulp.task('cleanjs', ['typescript'], function () {
   return gulp.src('app/*.html')
@@ -46,16 +56,6 @@ gulp.task('cleanjs', ['typescript'], function () {
     .pipe(notify({ message: "JS concatenation and minification run successfully", onLast: true }))
 });
 // USEREF TASK END
-
-// TYPESCRIPT TASK
-gulp.task('typescript', function () {
-  return gulp.src('app/**/*.ts')
-    .pipe(ts())
-    .pipe(gulp.dest('dist'))
-    // .pipe(gulp.dest(function (file) { return file.base; }))
-    .pipe(notify({ message: "Typescript transpiling successfully", onLast: true }))
-});
-// TYPESCRIPT TASK END
 
 // BROWSER SYNC TASK
 gulp.task('browserSync', function () {
