@@ -13,16 +13,16 @@ var ts = require('gulp-typescript');
 //test
 
 // SASS TASK
-gulp.task("sass", function(){
+gulp.task("sass", function () {
   console.log("running sass task");
   return gulp.src('app/scss/**/*.scss')
     .pipe(sass())
     .pipe(gulp.dest('app/css/'))
-    .pipe(notify({message: "SASS run successfully", onLast: true}))
-    
+    .pipe(notify({ message: "SASS run successfully", onLast: true }))
+
 });
 
-gulp.task('cleancss', ['sass'], function(){
+gulp.task('cleancss', ['sass'], function () {
   console.log("cleancss");
   return gulp.src('app/*.html')
     .pipe(useref())
@@ -32,23 +32,33 @@ gulp.task('cleancss', ['sass'], function(){
     .pipe(browserSync.reload({
       stream: true
     })) // reload the browser after css are updated
-    .pipe(notify({message: "CSS concatenation and minification run successfully", onLast: true}))
+    .pipe(notify({ message: "CSS concatenation and minification run successfully", onLast: true }))
 });
 // SASS TASK END
 
 // USEREF TASK (It will conctaenate all js wrapped in comment containings info about the path a nd final dest)
-gulp.task('cleanjs', function(){
+gulp.task('cleanjs', ['typescript'], function () {
   return gulp.src('app/*.html')
     .pipe(useref())
     // Minifies only if it's a JAVASCRIPT file
     .pipe(gulpIf('*.js', uglify()))
-    .pipe(gulp.dest('dist'))
-    .pipe(notify({message: "JS concatenation and minification run successfully", onLast: true}))
+    //.pipe(gulp.dest('dist'))
+    .pipe(notify({ message: "JS concatenation and minification run successfully", onLast: true }))
 });
 // USEREF TASK END
 
+// TYPESCRIPT TASK
+gulp.task('typescript', function () {
+  return gulp.src('app/**/*.ts')
+    .pipe(ts())
+    .pipe(gulp.dest('dist'))
+    // .pipe(gulp.dest(function (file) { return file.base; }))
+    .pipe(notify({ message: "Typescript transpiling successfully", onLast: true }))
+});
+// TYPESCRIPT TASK END
+
 // BROWSER SYNC TASK
-gulp.task('browserSync', function() {
+gulp.task('browserSync', function () {
   browserSync.init({
     server: {
       baseDir: 'app'
@@ -60,11 +70,11 @@ gulp.task('browserSync', function() {
 // -------------------------------------------------------------------------------------------------------------
 
 //START THE WATCHERS
-gulp.task('sync', ["cleancss"], function (){
+gulp.task('sync', ["cleancss", 'cleanjs'], function () {
   gulp.watch('app/scss/**/*.scss', ['cleancss']);
-  gulp.watch('app/js/**/*.js', ['cleanjs']); 
+  gulp.watch('app/ts/**/*.ts', ['cleanjs']);
   // Reloads the browser whenever HTML or JS files change
-  gulp.watch('app/*.html', browserSync.reload); 
-  gulp.watch('app/js/**/*.js', browserSync.reload); 
+  gulp.watch('app/*.html', browserSync.reload);
+  gulp.watch('app/js/**/*.js', browserSync.reload);
 });
 //START THE WATCHERS END
