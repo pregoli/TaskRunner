@@ -8,25 +8,30 @@ var uglify = require('gulp-uglify');
 var notify = require("gulp-notify");
 var browserSync = require('browser-sync').create();
 
+var ts = require('gulp-typescript');
+
 //test
 
 // SASS TASK
 gulp.task("sass", function(){
+  console.log("running sass task");
   return gulp.src('app/scss/**/*.scss')
     .pipe(sass())
     .pipe(gulp.dest('app/css/'))
     .pipe(notify({message: "SASS run successfully", onLast: true}))
-    .pipe(browserSync.reload({
-      stream: true
-    })) // reload the browser after css are updated
+    
 });
 
 gulp.task('cleancss', ['sass'], function(){
+  console.log("cleancss");
   return gulp.src('app/*.html')
     .pipe(useref())
     // Minifies only if it's a CSS file
     .pipe(gulpIf('*.css', cssnano()))
     .pipe(gulp.dest('dist'))
+    .pipe(browserSync.reload({
+      stream: true
+    })) // reload the browser after css are updated
     .pipe(notify({message: "CSS concatenation and minification run successfully", onLast: true}))
 });
 // SASS TASK END
@@ -55,7 +60,7 @@ gulp.task('browserSync', function() {
 // -------------------------------------------------------------------------------------------------------------
 
 //START THE WATCHERS
-gulp.task('sync', ['browserSync', 'sass', 'cleanjs', 'cleancss'], function (){
+gulp.task('sync', ["cleancss"], function (){
   gulp.watch('app/scss/**/*.scss', ['cleancss']);
   gulp.watch('app/js/**/*.js', ['cleanjs']); 
   // Reloads the browser whenever HTML or JS files change
