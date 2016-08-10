@@ -1,0 +1,9 @@
+
+RESOURCE: https://css-tricks.com/gulp-for-beginners/
+
+
+1) create proj folder
+2) run 'npm init -y' (y is yes, will create a package.json with the default values)
+3) run npm install gulp -g (will make gulp available on global)
+4) run npm install gulp -save-dev (it will add Gulp to the devDependencies on the package.json)
+5) Add gulpfile.js
